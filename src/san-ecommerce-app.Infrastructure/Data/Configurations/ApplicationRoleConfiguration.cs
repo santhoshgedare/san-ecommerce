@@ -19,7 +19,7 @@ public class ApplicationRoleConfiguration : IEntityTypeConfiguration<Application
 
         var permissionsComparer = new ValueComparer<ICollection<string>>(
             (left, right) => left!.SequenceEqual(right!),
-            permissions => permissions.Aggregate(0, (current, permission) => HashCode.Combine(current, permission.GetHashCode(StringComparison.Ordinal))),
+            permissions => permissions.Aggregate(0, (current, permission) => HashCode.Combine(current, StringComparer.Ordinal.GetHashCode(permission))),
             permissions => permissions.ToList());
 
         builder.Property(r => r.Permissions)

@@ -51,9 +51,9 @@ public static class DatabaseSeeder
             }
             else
             {
-                var expectedPermissions = permissions.OrderBy(permission => permission).ToArray();
-                var currentPermissions = existingRole.Permissions.OrderBy(permission => permission).ToArray();
-                if (!expectedPermissions.SequenceEqual(currentPermissions, StringComparer.Ordinal))
+                var expectedPermissions = permissions.ToHashSet(StringComparer.Ordinal);
+                var currentPermissions = existingRole.Permissions.ToHashSet(StringComparer.Ordinal);
+                if (!expectedPermissions.SetEquals(currentPermissions))
                 {
                     existingRole.Permissions = permissions.ToList();
                     var updateResult = await roleManager.UpdateAsync(existingRole);
