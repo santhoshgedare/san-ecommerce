@@ -1,0 +1,5 @@
+<mat-form-field appearance="outline" class="search-box">
+  <mat-label>{{ 'common.search' | translate }}</mat-label>
+  <input matInput (input)="update($event)" />
+  <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>

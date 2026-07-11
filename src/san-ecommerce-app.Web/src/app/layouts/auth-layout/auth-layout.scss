@@ -1,0 +1,29 @@
+.auth-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  align-items: center;
+}
+
+.auth-layout__hero {
+  padding: 2rem;
+}
+
+.auth-layout__hero h1 {
+  font-size: clamp(2rem, 4vw, 3.75rem);
+  margin: 1rem 0;
+}
+
+.auth-layout__hero p,
+.auth-layout__hero li {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.auth-layout__panel {
+  max-width: 34rem;
+  width: 100%;
+  margin-inline: auto;
+  padding: 2rem;
+}

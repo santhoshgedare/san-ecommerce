@@ -1,0 +1,9 @@
+@if (breadcrumbService.breadcrumbs().length) {
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a routerLink="/dashboard">{{ 'nav.dashboard' | translate }}</a>
+    @for (item of breadcrumbService.breadcrumbs(); track item.route) {
+      <mat-icon>chevron_right</mat-icon>
+      <a [routerLink]="item.route">{{ item.label | translate }}</a>
+    }
+  </nav>
+}

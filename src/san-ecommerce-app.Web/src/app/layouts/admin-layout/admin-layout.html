@@ -1,0 +1,95 @@
+<mat-sidenav-container class="layout-shell">
+  <mat-sidenav
+    class="layout-shell__sidenav"
+    [opened]="sidenavOpened()"
+    [mode]="isMobile() ? 'over' : 'side'"
+    [fixedInViewport]="isMobile()"
+    [style.width]="collapsed() && !isMobile() ? '5rem' : '18rem'"
+  >
+    <div class="brand">
+      <span class="brand__mark">S</span>
+      @if (!collapsed() || isMobile()) {
+        <div>
+          <strong>San Commerce</strong>
+          <p>{{ 'app.adminPortal' | translate }}</p>
+        </div>
+      }
+    </div>
+
+    <mat-nav-list>
+      @for (item of navigationService.menu(); track item.route) {
+        <a
+          mat-list-item
+          [routerLink]="item.route"
+          routerLinkActive="is-active"
+          [routerLinkActiveOptions]="{ exact: item.route === '/users' || item.route === '/dashboard' }"
+          (click)="navigate(item.route)"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          @if (!collapsed() || isMobile()) {
+            <span matListItemTitle>{{ item.labelKey | translate }}</span>
+          }
+        </a>
+        @if (item.children?.length && (!collapsed() || isMobile())) {
+          <div class="sub-nav">
+            @for (child of item.children; track child.route) {
+              <a mat-button type="button" [routerLink]="child.route" (click)="navigate(child.route)">
+                {{ child.labelKey | translate }}
+              </a>
+            }
+          </div>
+        }
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="toolbar app-card">
+      <button mat-icon-button type="button" (click)="toggleSidenav()">
+        <mat-icon>{{ isMobile() ? 'menu' : 'left_panel_open' }}</mat-icon>
+      </button>
+
+      <div class="toolbar__spacer"></div>
+
+      <button mat-icon-button type="button" (click)="themeService.toggle()">
+        <mat-icon>{{ themeService.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+
+      <button mat-icon-button [matMenuTriggerFor]="languageMenu" type="button">
+        <mat-icon>translate</mat-icon>
+      </button>
+      <mat-menu #languageMenu="matMenu">
+        <button mat-menu-item type="button" (click)="changeLanguage('en')">English</button>
+        <button mat-menu-item type="button" (click)="changeLanguage('es')">Español</button>
+      </mat-menu>
+
+      <button mat-icon-button [matMenuTriggerFor]="notificationMenu" type="button">
+        <mat-icon>notifications</mat-icon>
+      </button>
+      <mat-menu #notificationMenu="matMenu">
+        @for (notification of notifications(); track notification) {
+          <button mat-menu-item type="button">{{ notification }}</button>
+        }
+      </mat-menu>
+
+      <button class="user-button" mat-button [matMenuTriggerFor]="userMenu" type="button">
+        <app-avatar [name]="userName()"></app-avatar>
+        @if (!isMobile()) {
+          <span>{{ userName() }}</span>
+        }
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item routerLink="/profile"><mat-icon>account_circle</mat-icon>{{ 'nav.profile' | translate }}</button>
+        <button mat-menu-item routerLink="/change-password"><mat-icon>lock_reset</mat-icon>{{ 'nav.changePassword' | translate }}</button>
+        <button mat-menu-item type="button" (click)="logout()"><mat-icon>logout</mat-icon>{{ 'auth.logout' | translate }}</button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <main class="content">
+      <app-breadcrumb></app-breadcrumb>
+      <router-outlet></router-outlet>
+    </main>
+
+    <footer class="footer">© {{ currentYear }} San Commerce · Angular Enterprise Shell</footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

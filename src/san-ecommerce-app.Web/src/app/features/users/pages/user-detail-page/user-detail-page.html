@@ -1,0 +1,25 @@
+@if (user(); as selectedUser) {
+  <section class="app-page">
+    <app-page-header [title]="selectedUser.fullName" [subtitle]="selectedUser.email" eyebrow="User profile"></app-page-header>
+    <div class="detail-grid">
+      <mat-card class="app-card page-section">
+        <mat-tab-group>
+          <mat-tab label="Overview">
+            <dl>
+              <dt>Department</dt><dd>{{ selectedUser.department ?? '—' }}</dd>
+              <dt>Employee code</dt><dd>{{ selectedUser.employeeCode ?? '—' }}</dd>
+              <dt>Phone</dt><dd>{{ selectedUser.phoneNumber ?? '—' }}</dd>
+              <dt>Status</dt><dd>{{ selectedUser.isActive ? 'Active' : 'Inactive' }}</dd>
+            </dl>
+          </mat-tab>
+          <mat-tab label="Security">
+            <p>JWT session health, password rotation, and role grants are managed centrally.</p>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card>
+      <app-user-roles-panel [roles]="selectedUser.roles"></app-user-roles-panel>
+    </div>
+  </section>
+} @else {
+  <app-empty-state title="User not found" description="The requested user could not be loaded."></app-empty-state>
+}

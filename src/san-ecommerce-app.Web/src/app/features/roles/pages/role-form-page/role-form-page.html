@@ -1,0 +1,46 @@
+<section class="app-page">
+  <app-page-header [title]="isEditMode ? 'Edit role' : 'Create role'" subtitle="Combine permissions into manageable role bundles." eyebrow="Step-by-step"></app-page-header>
+  <mat-stepper linear class="app-card page-section">
+    <mat-step [stepControl]="form">
+      <ng-template matStepLabel>Role details</ng-template>
+      <form [formGroup]="form" class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Role name</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+        <app-validation-message [control]="form.controls.name"></app-validation-message>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput rows="3" formControlName="description"></textarea>
+        </mat-form-field>
+        <div class="step-actions">
+          <button mat-flat-button matStepperNext color="primary" type="button">Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Permissions</ng-template>
+      <div class="permission-groups" [formGroup]="form">
+        @for (group of permissionGroups; track group.key) {
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>{{ group.labelKey | translate }}</mat-panel-title>
+            </mat-expansion-panel-header>
+            @for (permission of group.permissions; track permission.key) {
+              <mat-checkbox
+                [checked]="form.controls.permissions.value.includes(permission.key)"
+                (change)="togglePermission(permission.key, $event.checked)"
+              >
+                {{ permission.labelKey | translate }}
+              </mat-checkbox>
+            }
+          </mat-expansion-panel>
+        }
+      </div>
+      <div class="step-actions">
+        <button mat-button matStepperPrevious type="button">Back</button>
+        <button mat-flat-button color="primary" type="button" (click)="submit()" [disabled]="saving()">Save role</button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</section>

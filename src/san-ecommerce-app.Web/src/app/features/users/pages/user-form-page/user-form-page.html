@@ -1,0 +1,69 @@
+<section class="app-page">
+  <app-page-header
+    [title]="isEditMode ? 'Edit user' : 'Create user'"
+    subtitle="Capture identity details, contact preferences, and role assignment."
+    eyebrow="Reactive forms"
+  ></app-page-header>
+
+  <form class="app-card page-section form-grid" [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>First name</mat-label>
+      <input matInput formControlName="firstName" />
+    </mat-form-field>
+    <app-validation-message [control]="form.controls.firstName"></app-validation-message>
+    <mat-form-field appearance="outline">
+      <mat-label>Last name</mat-label>
+      <input matInput formControlName="lastName" />
+    </mat-form-field>
+    <app-validation-message [control]="form.controls.lastName"></app-validation-message>
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" />
+    </mat-form-field>
+    <app-validation-message [control]="form.controls.email"></app-validation-message>
+
+    @if (!isEditMode) {
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+      <app-validation-message [control]="form.controls.password"></app-validation-message>
+      <mat-form-field appearance="outline">
+        <mat-label>Confirm password</mat-label>
+        <input matInput type="password" formControlName="confirmPassword" />
+      </mat-form-field>
+      <app-validation-message [control]="form.controls.confirmPassword"></app-validation-message>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Employee code</mat-label>
+      <input matInput formControlName="employeeCode" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Department</mat-label>
+      <input matInput formControlName="department" [matAutocomplete]="departmentAuto" />
+      <mat-autocomplete #departmentAuto="matAutocomplete">
+        @for (department of departments; track department) {
+          <mat-option [value]="department">{{ department }}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Phone number</mat-label>
+      <input matInput formControlName="phoneNumber" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Roles</mat-label>
+      <mat-select formControlName="roles" multiple>
+        @for (role of roles; track role) {
+          <mat-option [value]="role">{{ role }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="form-actions">
+      <button mat-button type="button" routerLink="/users">Cancel</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="isSaving()">Save user</button>
+    </div>
+  </form>
+</section>

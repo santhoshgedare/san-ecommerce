@@ -1,0 +1,15 @@
+<main class="auth-layout">
+  <section class="auth-layout__hero">
+    <span class="app-chip">Angular 22 · Signals · Material</span>
+    <h1>{{ 'app.tagline' | translate }}</h1>
+    <p>{{ 'app.subtitle' | translate }}</p>
+    <ul>
+      <li>{{ 'auth.features.security' | translate }}</li>
+      <li>{{ 'auth.features.authorization' | translate }}</li>
+      <li>{{ 'auth.features.localization' | translate }}</li>
+    </ul>
+  </section>
+  <section class="auth-layout__panel app-card">
+    <router-outlet></router-outlet>
+  </section>
+</main>
