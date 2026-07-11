@@ -1,0 +1,115 @@
+{
+  "app": {
+    "tagline": "Administración empresarial moderna para San Commerce.",
+    "subtitle": "Base Angular lista para producción con autenticación segura, diseño adaptable y organización escalable.",
+    "adminPortal": "Portal administrativo"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "loginSubtitle": "Usa tu cuenta de ASP.NET Core Identity para entrar al panel.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "rememberMe": "Recordarme",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "forgotPasswordSubtitle": "Ingresa tu correo para iniciar el restablecimiento.",
+    "sendResetLink": "Enviar enlace",
+    "backToLogin": "Volver al inicio de sesión",
+    "resetPassword": "Restablecer contraseña",
+    "resetPasswordSubtitle": "Envía el token y define una nueva contraseña.",
+    "resetToken": "Token de restablecimiento",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "features": {
+      "security": "Flujo JWT con token de acceso y refresco",
+      "authorization": "Navegación basada en roles y permisos",
+      "localization": "Cambio de idioma con ngx-translate"
+    }
+  },
+  "common": {
+    "search": "Buscar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "deleteConfirmation": "¿Seguro que deseas eliminar {{ item }}?",
+    "backHome": "Volver al panel",
+    "actions": "Acciones",
+    "records": "registros"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "users": "Usuarios",
+    "userList": "Lista de usuarios",
+    "addUser": "Agregar usuario",
+    "deletedUsers": "Usuarios eliminados",
+    "roles": "Roles",
+    "permissions": "Permisos",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "changePassword": "Cambiar contraseña"
+  },
+  "users": {
+    "editTitle": "Editar usuario",
+    "detailTitle": "Detalle del usuario"
+  },
+  "roles": {
+    "createTitle": "Crear rol",
+    "editTitle": "Editar rol"
+  },
+  "permissions": {
+    "groups": {
+      "dashboard": "Panel",
+      "users": "Usuarios",
+      "roles": "Roles",
+      "permissions": "Permisos",
+      "settings": "Perfil y configuración"
+    },
+    "dashboard": { "view": "Ver panel", "viewDescription": "Acceder a indicadores y actividad." },
+    "users": {
+      "view": "Ver usuarios",
+      "viewDescription": "Consultar usuarios y perfiles.",
+      "create": "Crear usuarios",
+      "createDescription": "Registrar nuevos usuarios.",
+      "edit": "Editar usuarios",
+      "editDescription": "Actualizar identidad y perfil.",
+      "delete": "Eliminar usuarios",
+      "deleteDescription": "Archivar usuarios activos.",
+      "restore": "Restaurar usuarios",
+      "restoreDescription": "Reactivar usuarios inactivos.",
+      "assignRoles": "Asignar roles",
+      "assignRolesDescription": "Otorgar o revocar roles.",
+      "resetPassword": "Restablecer contraseña",
+      "resetPasswordDescription": "Iniciar recuperación de contraseña."
+    },
+    "roles": {
+      "view": "Ver roles",
+      "viewDescription": "Consultar perfiles de acceso.",
+      "manage": "Administrar roles",
+      "manageDescription": "Crear y ajustar definiciones de roles."
+    },
+    "permissions": {
+      "view": "Ver permisos",
+      "viewDescription": "Consultar matriz de permisos.",
+      "manage": "Administrar permisos",
+      "manageDescription": "Mantener la matriz de permisos."
+    },
+    "profile": { "view": "Ver perfil", "viewDescription": "Acceder a datos personales." },
+    "settings": { "manage": "Administrar configuración", "manageDescription": "Actualizar preferencias." }
+  },
+  "validation": {
+    "required": "Este campo es obligatorio.",
+    "email": "Ingresa un correo válido.",
+    "minlength": "El valor es demasiado corto.",
+    "fieldMismatch": "Los valores no coinciden.",
+    "weakPassword": "Usa 8 caracteres con mayúscula, minúscula, número y símbolo.",
+    "invalid": "Ingresa un valor válido."
+  },
+  "errors": {
+    "unauthorizedTitle": "Autenticación requerida",
+    "unauthorizedMessage": "Inicia sesión para continuar.",
+    "accessDeniedTitle": "Acceso denegado",
+    "accessDeniedMessage": "Tu rol actual no permite acceder a esta página.",
+    "notFoundTitle": "Página no encontrada",
+    "notFoundMessage": "La página solicitada no está disponible."
+  }
+}

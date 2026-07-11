@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, computed, effect, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 
@@ -17,6 +17,9 @@ import { NoData } from '@shared/components/no-data/no-data';
   styleUrl: './data-table.scss',
 })
 export class DataTable {
+  private readonly exportService = inject(ExportService);
+  private readonly printService = inject(PrintService);
+  readonly permissionService = inject(PermissionService);
   readonly title = input('');
   readonly rows = input<readonly Record<string, unknown>[]>([]);
   readonly columns = input<readonly DataTableColumn[]>([]);
@@ -53,11 +56,7 @@ export class DataTable {
     return columns;
   });
 
-  constructor(
-    private readonly exportService: ExportService,
-    private readonly printService: PrintService,
-    readonly permissionService: PermissionService,
-  ) {
+  constructor() {
     effect(() => {
       const defaultColumns = this.columns().filter((column) => !column.hidden).map((column) => column.key);
       if (defaultColumns.length && this.selectedColumns().length === 0) {

@@ -1,59 +1,57 @@
-# SanEcommerceAppWeb
+# San E-Commerce Admin
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.6.
+Angular 22 standalone admin application for the `san-ecommerce` platform.
 
-## Development server
+## Highlights
 
-To start a local development server, run:
+- Standalone components and lazy-loaded routes
+- Strict TypeScript, ESLint, Prettier, SCSS
+- Angular Signals for UI state and RxJS for API communication
+- JWT authentication shell with refresh token, remember me, auto-login, and idle timeout
+- Role/permission-aware navigation, guards, directive, and layout
+- Responsive Angular Material dashboard with Chart.js, theme toggle, and i18n wiring
+- Typed integration services aligned to the existing `.NET 10` JWT API endpoints
 
-```bash
-ng serve
-```
+## Location
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Frontend source lives in `/home/runner/work/san-ecommerce/san-ecommerce/src/san-ecommerce-app.Web`.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Commands
 
 ```bash
-ng generate --help
+npm install
+npm run lint
+npm run build
+npm start
 ```
 
-## Building
+## Structure
 
-To build the project run:
+- `src/app/core` - auth, authorization, guards, interceptors, configuration, typed models
+- `src/app/shared` - reusable Material-backed UI components, directive, pipe, validators, services
+- `src/app/layouts` - admin shell and auth shell
+- `src/app/features` - dashboard, auth, users, roles, permissions, profile, settings
+- `src/environments` - environment-based API configuration
+- `src/assets/i18n` - translation catalogs
 
-```bash
-ng build
-```
+## API alignment
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Configured endpoints match the current backend controllers:
 
-## Running unit tests
+- `POST /api/v1/Auth/login`
+- `POST /api/v1/Auth/refresh-token`
+- `POST /api/v1/Auth/change-password`
+- `POST /api/v1/Auth/forgot-password`
+- `POST /api/v1/Auth/reset-password`
+- `POST /api/v1/Auth/revoke-token`
+- `GET/POST/PUT/DELETE /api/v1/Users`
+- `POST/DELETE /api/v1/Users/{id}/roles/{roleName}`
+- `GET/POST/DELETE /api/v1/Roles`
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+The current backend does not yet expose dedicated permission-management or role-update endpoints, so those areas are implemented as production-ready UI shells with typed services ready for API expansion.
 
-```bash
-ng test
-```
+## Notes
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `environment.ts` defaults to `https://localhost:7069/api/v1`; adjust for your deployment pipeline.
+- Translation catalogs currently include English and Spanish starter content.
+- Excel export uses an Excel-compatible tab-delimited download to avoid adding vulnerable spreadsheet dependencies.
