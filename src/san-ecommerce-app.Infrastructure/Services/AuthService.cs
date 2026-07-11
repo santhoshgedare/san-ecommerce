@@ -227,7 +227,6 @@ public class AuthService : IAuthService
             .Where(role => roleSet.Contains(role.Name!))
             .SelectMany(role => role.Permissions)
             .Distinct()
-            .OrderBy(permission => permission)
             .ToListAsync(cancellationToken);
 
         return permissions;
