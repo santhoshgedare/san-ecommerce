@@ -18,19 +18,11 @@ public class ApplicationRoleConfiguration : IEntityTypeConfiguration<Application
             .HasMaxLength(500);
 
         var permissionsComparer = new ValueComparer<ICollection<string>>(
-            (left, right) =>
-            {
-                if (ReferenceEquals(left, right))
-                    return true;
-                if (left is null || right is null)
-                    return false;
-
-                return left.SequenceEqual(right);
-            },
-            permissions => permissions is null
+            (left, right) => ReferenceEquals(left, right) || (left != null && right != null && left.SequenceEqual(right)),
+            permissions => permissions == null
                 ? 0
                 : permissions.Aggregate(0, (current, permission) => HashCode.Combine(current, StringComparer.Ordinal.GetHashCode(permission))),
-            permissions => permissions?.ToList() ?? new List<string>());
+            permissions => permissions == null ? new List<string>() : permissions.ToList());
 
         builder.Property(r => r.Permissions)
             .HasConversion(
