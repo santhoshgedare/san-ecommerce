@@ -37,9 +37,12 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
+            // Sanitize path and method to prevent log injection
+            var sanitizedMethod = context.Request.Method.Replace(Environment.NewLine, "").Replace("\r", "").Replace("\n", "");
+            var sanitizedPath = context.Request.Path.ToString().Replace(Environment.NewLine, "").Replace("\r", "").Replace("\n", "");
             _logger.LogError(ex, "An unhandled exception occurred while processing {Method} {Path}",
-                context.Request.Method,
-                context.Request.Path);
+                sanitizedMethod,
+                sanitizedPath);
 
             await HandleExceptionAsync(context, ex);
         }

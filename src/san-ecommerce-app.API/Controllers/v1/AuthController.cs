@@ -46,7 +46,9 @@ public class AuthController : ControllerBase
 
         if (result.IsFailure)
         {
-            _logger.LogWarning("Login failed for email: {Email}", request.Email);
+            // Sanitize email before logging to prevent log injection
+            var sanitizedEmail = (request.Email ?? string.Empty).Replace(Environment.NewLine, "").Replace("\r", "").Replace("\n", "");
+            _logger.LogWarning("Login failed for email: {Email}", sanitizedEmail);
             return Unauthorized(new ProblemDetails
             {
                 Status = StatusCodes.Status401Unauthorized,
