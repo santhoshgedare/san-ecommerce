@@ -41,6 +41,12 @@ public class MappingProfile : Profile
 
         // CreateRoleDto -> ApplicationRole (only map source DTO properties; role entity has extra fields)
         CreateMap<CreateRoleDto, ApplicationRole>(MemberList.Source)
-            .ForMember(dest => dest.NormalizedName, opt => opt.MapFrom(src => src.Name.ToUpperInvariant()));
+            .ForMember(dest => dest.NormalizedName, opt => opt.MapFrom(src => src.Name.ToUpperInvariant()))
+            .ForSourceMember(src => src.Permissions, opt => opt.DoNotValidate());
+
+        // UpdateRoleDto -> ApplicationRole
+        CreateMap<UpdateRoleDto, ApplicationRole>(MemberList.Source)
+            .ForMember(dest => dest.NormalizedName, opt => opt.MapFrom(src => src.Name.ToUpperInvariant()))
+            .ForSourceMember(src => src.Permissions, opt => opt.DoNotValidate());
     }
 }

@@ -33,6 +33,9 @@ public class LoginResponseDto
 
     /// <summary>Gets or sets the roles assigned to the user.</summary>
     public IEnumerable<string> Roles { get; set; } = [];
+
+    /// <summary>Gets or sets the effective permissions granted to the user.</summary>
+    public IEnumerable<string> Permissions { get; set; } = [];
 }
 
 /// <summary>Request DTO for refreshing a JWT token.</summary>

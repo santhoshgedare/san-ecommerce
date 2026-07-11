@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SanEcommerceApp.API.Authorization;
+using SanEcommerceApp.Application.Security;
 using SanEcommerceApp.Application.DTOs.User;
 using SanEcommerceApp.Application.Services.Interfaces;
 
@@ -32,7 +34,7 @@ public class UsersController : ControllerBase
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A list of users.</returns>
     [HttpGet]
-    [Authorize(Roles = "Administrator,Manager")]
+    [HasPermission(AppPermissions.UsersView)]
     [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
@@ -44,6 +46,7 @@ public class UsersController : ControllerBase
     /// <param name="id">The user identifier.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     [HttpGet("{id:guid}")]
+    [HasPermission(AppPermissions.UsersView)]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
@@ -89,6 +92,7 @@ public class UsersController : ControllerBase
     /// <param name="request">The updated user data.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     [HttpPut("{id:guid}")]
+    [HasPermission(AppPermissions.UsersEdit)]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -113,7 +117,7 @@ public class UsersController : ControllerBase
     /// <param name="id">The user identifier.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Administrator")]
+    [HasPermission(AppPermissions.UsersDelete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
@@ -136,6 +140,7 @@ public class UsersController : ControllerBase
     /// <param name="id">The user identifier.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     [HttpGet("{id:guid}/roles")]
+    [HasPermission(AppPermissions.UsersView)]
     [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetRoles(Guid id, CancellationToken cancellationToken)
@@ -157,7 +162,7 @@ public class UsersController : ControllerBase
     /// <param name="roleName">The name of the role to assign.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     [HttpPost("{id:guid}/roles/{roleName}")]
-    [Authorize(Roles = "Administrator")]
+    [HasPermission(AppPermissions.UsersAssignRoles)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AssignRole(
@@ -182,7 +187,7 @@ public class UsersController : ControllerBase
     /// <param name="roleName">The name of the role to remove.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     [HttpDelete("{id:guid}/roles/{roleName}")]
-    [Authorize(Roles = "Administrator")]
+    [HasPermission(AppPermissions.UsersAssignRoles)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RemoveRole(

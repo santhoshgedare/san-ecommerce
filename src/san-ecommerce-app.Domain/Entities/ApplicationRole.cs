@@ -10,6 +10,9 @@ public class ApplicationRole : IdentityRole<Guid>
     /// <summary>Gets or sets the description of the role.</summary>
     public string? Description { get; set; }
 
+    /// <summary>Gets or sets the permissions assigned to the role.</summary>
+    public ICollection<string> Permissions { get; set; } = [];
+
     /// <summary>Gets or sets a value indicating whether the role has been soft-deleted.</summary>
     public bool IsDeleted { get; set; }
 

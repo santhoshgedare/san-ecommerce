@@ -23,32 +23,36 @@
 
     <mat-card class="app-card page-section">
       <h3>Permission matrix</h3>
-      <table class="matrix-table">
-        <thead>
-          <tr>
-            <th>Permission</th>
-            @for (role of roles; track role) {
-              <th>{{ role }}</th>
+      @if (loading()) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      } @else {
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th>Permission</th>
+              @for (role of roleNames(); track role) {
+                <th>{{ role }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (group of catalog.groups; track group.key) {
+              @for (permission of group.permissions; track permission.key) {
+                <tr>
+                  <td>{{ permission.labelKey | translate }}</td>
+                  @for (role of roleNames(); track role) {
+                    <td>
+                      <mat-icon color="primary">
+                        {{ hasPermission(role, permission.key) ? 'check_circle' : 'remove_circle_outline' }}
+                      </mat-icon>
+                    </td>
+                  }
+                </tr>
+              }
             }
-          </tr>
-        </thead>
-        <tbody>
-          @for (group of catalog.groups; track group.key) {
-            @for (permission of group.permissions; track permission.key) {
-              <tr>
-                <td>{{ permission.labelKey | translate }}</td>
-                @for (role of roles; track role) {
-                  <td>
-                    <mat-icon color="primary">
-                      {{ hasPermission(role, permission.key) ? 'check_circle' : 'remove_circle_outline' }}
-                    </mat-icon>
-                  </td>
-                }
-              </tr>
-            }
-          }
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      }
     </mat-card>
   </div>
 </section>

@@ -2,6 +2,7 @@ export interface Role {
   id: string;
   name: string;
   description: string | null;
+  permissions: string[];
 }
 
 export interface CreateRoleRequest {
@@ -9,3 +10,5 @@ export interface CreateRoleRequest {
   description: string | null;
   permissions: string[];
 }
+
+export type UpdateRoleRequest = CreateRoleRequest;
