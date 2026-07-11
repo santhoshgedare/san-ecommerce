@@ -76,9 +76,7 @@ public static class DatabaseSeeder
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(admin, "Administrator");
-                // Log only domain part to avoid exposing full email in logs
-                var emailDomain = adminEmail.Contains('@') ? adminEmail[adminEmail.IndexOf('@')..] : "[redacted]";
-                logger.LogInformation("Seeded administrator account with domain: {EmailDomain}", emailDomain);
+                logger.LogInformation("Default administrator account seeded successfully.");
             }
             else
             {
