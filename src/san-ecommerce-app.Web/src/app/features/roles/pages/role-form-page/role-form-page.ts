@@ -1,8 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 import { PERMISSION_GROUPS } from '@core/constants/permission.constants';
+import { Role } from '@core/models/role.models';
 import { NotificationService } from '@core/services/notification';
 import { PageHeader } from '@shared/components/page-header/page-header';
 import { ValidationMessage } from '@shared/components/validation-message/validation-message';
@@ -21,16 +24,42 @@ export class RoleFormPage {
   private readonly notifications = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly roleId = this.route.snapshot.paramMap.get('id');
   readonly isEditMode = !!this.roleId;
   readonly saving = signal(false);
+  readonly loading = signal(false);
   readonly permissionGroups = PERMISSION_GROUPS;
+  readonly pageTitle = computed(() => (this.isEditMode ? 'Edit role' : 'Create role'));
   readonly form = this.formBuilder.nonNullable.group({
     name: ['', [Validators.required]],
     description: [''],
     permissions: [[] as string[]],
   });
+
+  constructor() {
+    if (!this.roleId) {
+      return;
+    }
+
+    this.loading.set(true);
+    this.rolesApi
+      .getRole(this.roleId)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe((role) => {
+        if (!role) {
+          this.notifications.error('Role not found.');
+          void this.router.navigate(['/roles']);
+          return;
+        }
+
+        this.patchForm(role);
+      });
+  }
 
   submit(): void {
     if (this.form.invalid) {
@@ -39,17 +68,15 @@ export class RoleFormPage {
     }
 
     this.saving.set(true);
-    if (this.isEditMode) {
-      this.notifications.info('Role edit requires a dedicated API endpoint. Changes were stored locally for review.');
-      this.saving.set(false);
-      return;
-    }
+    const request = this.form.getRawValue();
+    const action = this.isEditMode && this.roleId ? this.rolesApi.updateRole(this.roleId, request) : this.rolesApi.createRole(request);
 
-    this.rolesApi.createRole(this.form.getRawValue()).subscribe(() => {
-      this.notifications.success('Role created.');
-      this.saving.set(false);
-      void this.router.navigate(['/roles']);
-    });
+    action
+      .pipe(finalize(() => this.saving.set(false)))
+      .subscribe(() => {
+        this.notifications.success(this.isEditMode ? 'Role updated.' : 'Role created.');
+        void this.router.navigate(['/roles']);
+      });
   }
 
   togglePermission(permission: string, checked: boolean): void {
@@ -57,5 +84,13 @@ export class RoleFormPage {
     this.form.controls.permissions.setValue(
       checked ? [...current, permission] : current.filter((value) => value !== permission),
     );
+  }
+
+  private patchForm(role: Role): void {
+    this.form.patchValue({
+      name: role.name,
+      description: role.description ?? '',
+      permissions: role.permissions,
+    });
   }
 }

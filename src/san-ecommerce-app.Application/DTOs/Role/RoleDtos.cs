@@ -11,6 +11,9 @@ public class RoleDto
 
     /// <summary>Gets or sets the role description.</summary>
     public string? Description { get; set; }
+
+    /// <summary>Gets or sets the permissions assigned to the role.</summary>
+    public IEnumerable<string> Permissions { get; set; } = [];
 }
 
 /// <summary>DTO for creating a new role.</summary>
@@ -21,6 +24,22 @@ public class CreateRoleDto
 
     /// <summary>Gets or sets the role description.</summary>
     public string? Description { get; set; }
+
+    /// <summary>Gets or sets the permissions assigned to the role.</summary>
+    public IEnumerable<string> Permissions { get; set; } = [];
+}
+
+/// <summary>DTO for updating an existing role.</summary>
+public class UpdateRoleDto
+{
+    /// <summary>Gets or sets the role name.</summary>
+    public string Name { get; set; } = string.Empty;
+
+    /// <summary>Gets or sets the role description.</summary>
+    public string? Description { get; set; }
+
+    /// <summary>Gets or sets the permissions assigned to the role.</summary>
+    public IEnumerable<string> Permissions { get; set; } = [];
 }
 
 /// <summary>DTO for assigning/removing a role to/from a user.</summary>

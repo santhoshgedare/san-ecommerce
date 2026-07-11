@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SanEcommerceApp.Domain.Entities;
+using System.Text.Json;
 
 namespace SanEcommerceApp.Infrastructure.Data.Configurations;
 
@@ -14,5 +16,18 @@ public class ApplicationRoleConfiguration : IEntityTypeConfiguration<Application
     {
         builder.Property(r => r.Description)
             .HasMaxLength(500);
+
+        var permissionsComparer = new ValueComparer<ICollection<string>>(
+            (left, right) => left!.SequenceEqual(right!),
+            permissions => permissions.Aggregate(0, (current, permission) => HashCode.Combine(current, permission.GetHashCode(StringComparison.Ordinal))),
+            permissions => permissions.ToList());
+
+        builder.Property(r => r.Permissions)
+            .HasConversion(
+                permissions => JsonSerializer.Serialize(permissions, (JsonSerializerOptions?)null),
+                value => string.IsNullOrWhiteSpace(value)
+                    ? new List<string>()
+                    : JsonSerializer.Deserialize<List<string>>(value, (JsonSerializerOptions?)null) ?? new List<string>())
+            .Metadata.SetValueComparer(permissionsComparer);
     }
 }

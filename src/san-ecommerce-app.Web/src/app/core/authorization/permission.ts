@@ -1,7 +1,6 @@
 import { Injectable, computed, inject } from '@angular/core';
 
 import { AuthService } from '@core/authentication/auth';
-import { ROLE_PERMISSION_MAP } from '@core/constants/permission.constants';
 
 @Injectable({ providedIn: 'root' })
 export class PermissionService {
@@ -9,12 +8,7 @@ export class PermissionService {
 
   readonly permissions = computed(() => {
     const session = this.authService.session();
-    if (!session) {
-      return [] as string[];
-    }
-
-    const derived = session.roles.flatMap((role) => ROLE_PERMISSION_MAP[role] ?? []);
-    return Array.from(new Set([...(session.permissions ?? []), ...derived]));
+    return session ? Array.from(new Set(session.permissions ?? [])) : ([] as string[]);
   });
 
   has(permission: string): boolean {

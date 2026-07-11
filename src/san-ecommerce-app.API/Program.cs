@@ -43,25 +43,29 @@ try
     builder.Services.AddHealthChecks()
         .AddDbContextCheck<ApplicationDbContext>("database");
 
+    const string corsPolicyName = "ApiCors";
+
     // CORS
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowAll", policy =>
-            policy.AllowAnyOrigin()
-                  .AllowAnyMethod()
-                  .AllowAnyHeader());
+        options.AddPolicy(corsPolicyName, policy =>
+        {
+            var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+            if (allowedOrigins.Length == 0)
+            {
+                policy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+                return;
+            }
+
+            policy.WithOrigins(allowedOrigins)
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
     });
 
-    // Authorization policies
-    builder.Services.AddAuthorization(options =>
-    {
-        options.AddPolicy("AdministratorOnly", policy =>
-            policy.RequireRole("Administrator"));
-        options.AddPolicy("ManagerOrAbove", policy =>
-            policy.RequireRole("Administrator", "Manager"));
-        options.AddPolicy("EmployeeOrAbove", policy =>
-            policy.RequireRole("Administrator", "Manager", "Employee"));
-    });
+    builder.Services.AddAuthorization();
 
     // ─── Build the application ────────────────────────────────────────────────
     var app = builder.Build();
@@ -92,7 +96,7 @@ try
 
     app.UseHttpsRedirection();
     app.UseSerilogRequestLogging();
-    app.UseCors("AllowAll");
+    app.UseCors(corsPolicyName);
 
     app.UseAuthentication();
     app.UseAuthorization();

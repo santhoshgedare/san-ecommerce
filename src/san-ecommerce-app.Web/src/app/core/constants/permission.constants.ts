@@ -19,24 +19,6 @@ export const APP_PERMISSIONS = {
 
 export type PermissionKey = (typeof APP_PERMISSIONS)[keyof typeof APP_PERMISSIONS];
 
-const allPermissions = Object.values(APP_PERMISSIONS);
-
-export const ROLE_PERMISSION_MAP: Readonly<Record<string, readonly PermissionKey[]>> = {
-  Administrator: allPermissions,
-  Manager: [
-    APP_PERMISSIONS.dashboardView,
-    APP_PERMISSIONS.usersView,
-    APP_PERMISSIONS.usersCreate,
-    APP_PERMISSIONS.usersEdit,
-    APP_PERMISSIONS.usersAssignRoles,
-    APP_PERMISSIONS.rolesView,
-    APP_PERMISSIONS.permissionsView,
-    APP_PERMISSIONS.profileView,
-    APP_PERMISSIONS.settingsManage,
-  ],
-  Employee: [APP_PERMISSIONS.dashboardView, APP_PERMISSIONS.profileView],
-};
-
 export const PERMISSION_GROUPS: readonly PermissionGroup[] = [
   {
     key: 'dashboard',

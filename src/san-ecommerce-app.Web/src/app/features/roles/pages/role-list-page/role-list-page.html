@@ -1,6 +1,6 @@
 <section class="app-page">
   <app-page-header title="Role management" subtitle="Design reusable access profiles for enterprise operations." eyebrow="RBAC">
-    <div actions>
+    <div actions *appHasPermission="'roles.manage'">
       <a mat-flat-button color="primary" routerLink="/roles/new">Create role</a>
     </div>
   </app-page-header>

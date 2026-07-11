@@ -3,10 +3,12 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SanEcommerceApp.Application.Common.Models;
 using SanEcommerceApp.Application.DTOs.Auth;
+using SanEcommerceApp.Application.Security;
 using SanEcommerceApp.Application.Services.Interfaces;
 using SanEcommerceApp.Domain.Entities;
 
@@ -18,6 +20,7 @@ namespace SanEcommerceApp.Infrastructure.Services;
 public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly JwtSettings _jwtSettings;
 
@@ -26,10 +29,12 @@ public class AuthService : IAuthService
     /// </summary>
     public AuthService(
         UserManager<ApplicationUser> userManager,
+        RoleManager<ApplicationRole> roleManager,
         SignInManager<ApplicationUser> signInManager,
         IOptions<JwtSettings> jwtSettings)
     {
         _userManager = userManager;
+        _roleManager = roleManager;
         _signInManager = signInManager;
         _jwtSettings = jwtSettings.Value;
     }
@@ -55,7 +60,8 @@ public class AuthService : IAuthService
             return Result<LoginResponseDto>.Failure("Invalid email or password.");
 
         var roles = await _userManager.GetRolesAsync(user);
-        var accessToken = GenerateJwtToken(user, roles);
+        var permissions = await GetPermissionsAsync(roles, cancellationToken);
+        var accessToken = GenerateJwtToken(user, roles, permissions);
         var refreshToken = GenerateRefreshToken();
 
         user.RefreshToken = refreshToken;
@@ -70,7 +76,8 @@ public class AuthService : IAuthService
             UserId = user.Id,
             Email = user.Email ?? string.Empty,
             FullName = user.FullName,
-            Roles = roles
+            Roles = roles,
+            Permissions = permissions
         });
     }
 
@@ -95,7 +102,8 @@ public class AuthService : IAuthService
             return Result<LoginResponseDto>.Failure("Invalid or expired refresh token.");
 
         var roles = await _userManager.GetRolesAsync(user);
-        var newAccessToken = GenerateJwtToken(user, roles);
+        var permissions = await GetPermissionsAsync(roles, cancellationToken);
+        var newAccessToken = GenerateJwtToken(user, roles, permissions);
         var newRefreshToken = GenerateRefreshToken();
 
         user.RefreshToken = newRefreshToken;
@@ -110,7 +118,8 @@ public class AuthService : IAuthService
             UserId = user.Id,
             Email = user.Email ?? string.Empty,
             FullName = user.FullName,
-            Roles = roles
+            Roles = roles,
+            Permissions = permissions
         });
     }
 
@@ -176,7 +185,7 @@ public class AuthService : IAuthService
         return Result.Success();
     }
 
-    private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
+    private string GenerateJwtToken(ApplicationUser user, IList<string> roles, IReadOnlyCollection<string> permissions)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -194,6 +203,7 @@ public class AuthService : IAuthService
         };
 
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        claims.AddRange(permissions.Select(permission => new Claim(AppPermissions.ClaimType, permission)));
 
         var token = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
@@ -203,6 +213,24 @@ public class AuthService : IAuthService
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private async Task<IReadOnlyCollection<string>> GetPermissionsAsync(
+        IEnumerable<string> roles,
+        CancellationToken cancellationToken)
+    {
+        var roleSet = roles.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        if (roleSet.Count == 0)
+            return [];
+
+        var permissions = await _roleManager.Roles
+            .Where(role => roleSet.Contains(role.Name!))
+            .SelectMany(role => role.Permissions)
+            .Distinct()
+            .OrderBy(permission => permission)
+            .ToListAsync(cancellationToken);
+
+        return permissions;
     }
 
     private static string GenerateRefreshToken()

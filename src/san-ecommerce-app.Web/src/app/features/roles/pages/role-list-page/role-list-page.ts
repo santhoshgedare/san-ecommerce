@@ -3,9 +3,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 
+import { APP_PERMISSIONS } from '@core/constants/permission.constants';
 import { DataTable } from '@shared/components/data-table/data-table';
 import { DeleteDialog } from '@shared/components/delete-dialog/delete-dialog';
 import { PageHeader } from '@shared/components/page-header/page-header';
+import { HasPermissionDirective } from '@shared/directives/has-permission';
 import { DataTableAction, DataTableColumn } from '@shared/models/data-table.models';
 import { MATERIAL_IMPORTS, SHARED_IMPORTS } from '@shared/material/material-imports';
 import { NotificationService } from '@core/services/notification';
@@ -14,7 +16,7 @@ import { RolesApiService } from '../../services/roles-api.service';
 
 @Component({
   selector: 'app-role-list-page',
-  imports: [RouterLink, DataTable, PageHeader, SHARED_IMPORTS, MATERIAL_IMPORTS],
+  imports: [RouterLink, DataTable, PageHeader, HasPermissionDirective, SHARED_IMPORTS, MATERIAL_IMPORTS],
   templateUrl: './role-list-page.html',
   styleUrl: './role-list-page.scss',
 })
@@ -29,10 +31,11 @@ export class RoleListPage {
   readonly columns: DataTableColumn[] = [
     { key: 'name', label: 'Role', sortable: true },
     { key: 'description', label: 'Description' },
+    { key: 'permissions', label: 'Permissions' },
   ];
   readonly actions: DataTableAction[] = [
-    { id: 'edit', label: 'Edit', icon: 'edit' },
-    { id: 'delete', label: 'Delete', icon: 'delete' },
+    { id: 'edit', label: 'Edit', icon: 'edit', permission: APP_PERMISSIONS.rolesManage },
+    { id: 'delete', label: 'Delete', icon: 'delete', permission: APP_PERMISSIONS.rolesManage },
   ];
 
   constructor() {
@@ -40,7 +43,12 @@ export class RoleListPage {
   }
 
   get rows(): Record<string, unknown>[] {
-    return this.roles().map((role) => ({ name: role.name, description: role.description ?? '—', entity: role }));
+    return this.roles().map((role) => ({
+      name: role.name,
+      description: role.description ?? '—',
+      permissions: `${role.permissions.length} assigned`,
+      entity: role,
+    }));
   }
 
   handleAction(event: { actionId: string; row: Record<string, unknown> }): void {

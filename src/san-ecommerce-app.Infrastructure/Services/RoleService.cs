@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SanEcommerceApp.Application.Common.Models;
 using SanEcommerceApp.Application.DTOs.Role;
+using SanEcommerceApp.Application.Security;
 using SanEcommerceApp.Application.Services.Interfaces;
 using SanEcommerceApp.Domain.Entities;
 
@@ -53,12 +54,42 @@ public class RoleService : IRoleService
         if (existingRole is not null)
             return Result<RoleDto>.Failure($"Role '{request.Name}' already exists.");
 
+        var permissions = ValidatePermissions(request.Permissions);
+        if (permissions.IsFailure)
+            return Result<RoleDto>.Failure(permissions.ErrorMessage!, permissions.Errors);
+
         var role = _mapper.Map<ApplicationRole>(request);
         role.Id = Guid.NewGuid();
+        role.Permissions = permissions.Data!;
 
         var result = await _roleManager.CreateAsync(role);
         if (!result.Succeeded)
             return Result<RoleDto>.Failure("Role creation failed.", result.Errors.Select(e => e.Description));
+
+        return Result<RoleDto>.Success(_mapper.Map<RoleDto>(role));
+    }
+
+    /// <inheritdoc/>
+    public async Task<Result<RoleDto>> UpdateRoleAsync(Guid roleId, UpdateRoleDto request, CancellationToken cancellationToken = default)
+    {
+        var role = await _roleManager.FindByIdAsync(roleId.ToString());
+        if (role is null || role.IsDeleted)
+            return Result<RoleDto>.Failure("Role not found.");
+
+        var conflictingRole = await _roleManager.FindByNameAsync(request.Name);
+        if (conflictingRole is not null && conflictingRole.Id != roleId)
+            return Result<RoleDto>.Failure($"Role '{request.Name}' already exists.");
+
+        var permissions = ValidatePermissions(request.Permissions);
+        if (permissions.IsFailure)
+            return Result<RoleDto>.Failure(permissions.ErrorMessage!, permissions.Errors);
+
+        _mapper.Map(request, role);
+        role.Permissions = permissions.Data!;
+
+        var result = await _roleManager.UpdateAsync(role);
+        if (!result.Succeeded)
+            return Result<RoleDto>.Failure("Role update failed.", result.Errors.Select(e => e.Description));
 
         return Result<RoleDto>.Success(_mapper.Map<RoleDto>(role));
     }
@@ -77,5 +108,22 @@ public class RoleService : IRoleService
             return Result.Failure("Role deletion failed.", result.Errors.Select(e => e.Description));
 
         return Result.Success();
+    }
+
+    private static Result<List<string>> ValidatePermissions(IEnumerable<string> permissions)
+    {
+        var normalizedPermissions = permissions
+            .Where(permission => !string.IsNullOrWhiteSpace(permission))
+            .Select(permission => permission.Trim())
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        var invalidPermissions = normalizedPermissions
+            .Where(permission => !AppPermissions.All.Contains(permission, StringComparer.Ordinal))
+            .ToList();
+
+        return invalidPermissions.Count > 0
+            ? Result<List<string>>.Failure("One or more permissions are invalid.", invalidPermissions)
+            : Result<List<string>>.Success(normalizedPermissions);
     }
 }

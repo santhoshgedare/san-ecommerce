@@ -1,6 +1,11 @@
 <section class="app-page">
-  <app-page-header [title]="isEditMode ? 'Edit role' : 'Create role'" subtitle="Combine permissions into manageable role bundles." eyebrow="Step-by-step"></app-page-header>
-  <mat-stepper linear class="app-card page-section">
+  <app-page-header [title]="pageTitle()" subtitle="Combine permissions into manageable role bundles." eyebrow="Step-by-step"></app-page-header>
+  @if (loading()) {
+    <mat-card class="app-card page-section">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </mat-card>
+  } @else {
+    <mat-stepper linear class="app-card page-section">
     <mat-step [stepControl]="form">
       <ng-template matStepLabel>Role details</ng-template>
       <form [formGroup]="form" class="form-grid">
@@ -42,5 +47,6 @@
         <button mat-flat-button color="primary" type="button" (click)="submit()" [disabled]="saving()">Save role</button>
       </div>
     </mat-step>
-  </mat-stepper>
+    </mat-stepper>
+  }
 </section>

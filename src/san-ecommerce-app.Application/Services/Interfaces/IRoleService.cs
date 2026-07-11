@@ -17,6 +17,9 @@ public interface IRoleService
     /// <summary>Creates a new role.</summary>
     Task<Result<RoleDto>> CreateRoleAsync(CreateRoleDto request, CancellationToken cancellationToken = default);
 
+    /// <summary>Updates an existing role.</summary>
+    Task<Result<RoleDto>> UpdateRoleAsync(Guid roleId, UpdateRoleDto request, CancellationToken cancellationToken = default);
+
     /// <summary>Deletes a role by identifier.</summary>
     Task<Result> DeleteRoleAsync(Guid roleId, CancellationToken cancellationToken = default);
 }

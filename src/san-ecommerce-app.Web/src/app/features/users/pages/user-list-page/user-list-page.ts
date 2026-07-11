@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 
 import { AuthService } from '@core/authentication/auth';
+import { APP_PERMISSIONS } from '@core/constants/permission.constants';
+import { Role } from '@core/models/role.models';
 import { UpdateUserRequest, User } from '@core/models/user.models';
 import { NotificationService } from '@core/services/notification';
 import { DataTable } from '@shared/components/data-table/data-table';
@@ -15,6 +17,7 @@ import { MATERIAL_IMPORTS, SHARED_IMPORTS } from '@shared/material/material-impo
 import { AssignRolesDialog } from '../../dialogs/assign-roles-dialog/assign-roles-dialog';
 import { ResetPasswordDialog } from '../../dialogs/reset-password-dialog/reset-password-dialog';
 import { UserFilters, UserFiltersValue } from '../../components/user-filters/user-filters';
+import { RolesApiService } from '@features/roles/services/roles-api.service';
 import { UsersApiService } from '../../services/users-api.service';
 
 @Component({
@@ -29,12 +32,13 @@ export class UserListPage {
   private readonly dialog = inject(MatDialog);
   private readonly notifications = inject(NotificationService);
   private readonly authService = inject(AuthService);
+  private readonly rolesApi = inject(RolesApiService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly users = signal<User[]>([]);
   readonly loading = signal(true);
   readonly filters = signal<UserFiltersValue>({ search: '', status: 'all', department: 'all' });
-  readonly availableRoles = ['Administrator', 'Manager', 'Employee'];
+  readonly availableRoles = signal<string[]>([]);
   readonly columns: DataTableColumn[] = [
     { key: 'fullName', label: 'Name', sortable: true },
     { key: 'email', label: 'Email', sortable: true },
@@ -43,12 +47,12 @@ export class UserListPage {
     { key: 'status', label: 'Status' },
   ];
   readonly actions: DataTableAction[] = [
-    { id: 'view', label: 'View', icon: 'visibility' },
-    { id: 'edit', label: 'Edit', icon: 'edit' },
-    { id: 'roles', label: 'Assign roles', icon: 'shield' },
-    { id: 'reset', label: 'Reset password', icon: 'lock_reset' },
-    { id: 'toggle', label: 'Activate or deactivate', icon: 'toggle_on' },
-    { id: 'delete', label: 'Delete', icon: 'delete' },
+    { id: 'view', label: 'View', icon: 'visibility', permission: APP_PERMISSIONS.usersView },
+    { id: 'edit', label: 'Edit', icon: 'edit', permission: APP_PERMISSIONS.usersEdit },
+    { id: 'roles', label: 'Assign roles', icon: 'shield', permission: APP_PERMISSIONS.usersAssignRoles },
+    { id: 'reset', label: 'Reset password', icon: 'lock_reset', permission: APP_PERMISSIONS.usersResetPassword },
+    { id: 'toggle', label: 'Activate or deactivate', icon: 'toggle_on', permission: APP_PERMISSIONS.usersEdit },
+    { id: 'delete', label: 'Delete', icon: 'delete', permission: APP_PERMISSIONS.usersDelete },
   ];
   readonly rows = computed(() =>
     this.users()
@@ -80,6 +84,7 @@ export class UserListPage {
 
   constructor() {
     this.load();
+    this.loadRoles();
   }
 
   applyFilters(filters: UserFiltersValue): void {
@@ -122,6 +127,12 @@ export class UserListPage {
     });
   }
 
+  private loadRoles(): void {
+    this.rolesApi.listRoles().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((roles: Role[]) => {
+      this.availableRoles.set(roles.map((role) => role.name));
+    });
+  }
+
   private deleteUser(user: User): void {
     this.dialog
       .open(DeleteDialog, { data: { itemName: user.fullName, itemType: 'user' } })
@@ -138,7 +149,7 @@ export class UserListPage {
   private openAssignRoles(user: User): void {
     this.dialog
       .open(AssignRolesDialog, {
-        data: { availableRoles: this.availableRoles, selectedRoles: user.roles },
+        data: { availableRoles: this.availableRoles(), selectedRoles: user.roles },
       })
       .afterClosed()
       .subscribe((roles: string[] | undefined) => {

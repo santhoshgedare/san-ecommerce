@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SanEcommerceApp.Application.Services.Interfaces;
 using SanEcommerceApp.Domain.Entities;
+using SanEcommerceApp.Infrastructure.Authorization;
 using SanEcommerceApp.Domain.Interfaces;
 using SanEcommerceApp.Infrastructure.Data;
+using SanEcommerceApp.Infrastructure.Options;
 using SanEcommerceApp.Infrastructure.Repositories;
 using SanEcommerceApp.Infrastructure.Services;
 
@@ -63,6 +66,7 @@ public static class ServiceCollectionExtensions
         // JWT Settings
         var jwtSection = configuration.GetSection(JwtSettings.SectionName);
         services.Configure<JwtSettings>(jwtSection);
+        services.Configure<AdminSeedOptions>(configuration.GetSection(AdminSeedOptions.SectionName));
 
         var jwtSettings = jwtSection.Get<JwtSettings>()
             ?? throw new InvalidOperationException("JwtSettings section is missing from configuration.");
@@ -87,6 +91,9 @@ public static class ServiceCollectionExtensions
                 ClockSkew = TimeSpan.Zero
             };
         });
+
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+        services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
         // Repositories
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
