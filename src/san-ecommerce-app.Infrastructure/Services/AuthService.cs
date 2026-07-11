@@ -223,11 +223,14 @@ public class AuthService : IAuthService
         if (roleSet.Count == 0)
             return [];
 
-        var permissions = await _roleManager.Roles
+        var roleEntities = await _roleManager.Roles
             .Where(role => roleSet.Contains(role.Name!))
+            .ToListAsync(cancellationToken);
+
+        var permissions = roleEntities
             .SelectMany(role => role.Permissions)
             .Distinct()
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         return permissions;
     }
