@@ -1,0 +1,41 @@
+<section class="app-page">
+  <app-page-header title="Settings" subtitle="Control appearance, notifications, and operational reminders." eyebrow="Preferences"></app-page-header>
+  <form class="app-card page-section" [formGroup]="form">
+    <mat-tab-group>
+      <mat-tab label="Appearance">
+        <div class="settings-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Language</mat-label>
+            <mat-select formControlName="language">
+              <mat-option value="en">English</mat-option>
+              <mat-option value="es">Español</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-slide-toggle formControlName="darkMode">Enable dark theme</mat-slide-toggle>
+        </div>
+      </mat-tab>
+      <mat-tab label="Notifications">
+        <div class="settings-grid">
+          <mat-slide-toggle formControlName="notifyProduct">Product updates</mat-slide-toggle>
+          <mat-slide-toggle formControlName="notifySecurity">Security alerts</mat-slide-toggle>
+        </div>
+      </mat-tab>
+      <mat-tab label="Operations">
+        <mat-expansion-panel expanded>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Maintenance window</mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-form-field appearance="outline">
+            <mat-label>Preferred review date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="maintenanceDate" />
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </mat-expansion-panel>
+      </mat-tab>
+    </mat-tab-group>
+    <div class="actions">
+      <button mat-flat-button color="primary" type="button" (click)="save()">Save settings</button>
+    </div>
+  </form>
+</section>

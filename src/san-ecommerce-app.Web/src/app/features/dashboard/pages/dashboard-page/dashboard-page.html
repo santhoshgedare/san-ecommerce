@@ -1,0 +1,66 @@
+<section class="app-page">
+  <app-page-header
+    title="Enterprise dashboard"
+    subtitle="Observe authentication health, business KPIs, and operational throughput in one responsive workspace."
+    eyebrow="Angular Signals"
+  >
+    <div actions>
+      <a mat-flat-button color="primary" routerLink="/users/new">Create user</a>
+    </div>
+  </app-page-header>
+
+  <div class="app-grid cards">
+    @for (card of cards; track card.label) {
+      <mat-card class="app-card stat-card">
+        <mat-card-content>
+          <p>{{ card.label }}</p>
+          <h2>{{ card.value }}</h2>
+          <span class="app-chip">{{ card.change }}</span>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+
+  <div class="dashboard-grid">
+    <mat-card class="app-card chart-card">
+      <mat-card-header>
+        <mat-card-title>Weekly sales</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <canvas #salesChart></canvas>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="app-card chart-card">
+      <mat-card-header>
+        <mat-card-title>Traffic mix</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <canvas #trafficChart></canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="dashboard-grid">
+    <mat-card class="app-card page-section">
+      <h3>Recent activity</h3>
+      <mat-list>
+        @for (activity of activities; track activity) {
+          <mat-list-item>{{ activity }}</mat-list-item>
+        }
+      </mat-list>
+    </mat-card>
+
+    <mat-card class="app-card page-section">
+      <h3>Quick actions</h3>
+      <div class="quick-actions">
+        @for (action of quickActions; track action.route) {
+          <a mat-stroked-button [routerLink]="action.route">
+            <mat-icon>{{ action.icon }}</mat-icon>
+            {{ action.label }}
+          </a>
+        }
+      </div>
+    </mat-card>
+  </div>
+</section>

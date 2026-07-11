@@ -1,0 +1,13 @@
+<section class="app-page">
+  <app-page-header title="User management" subtitle="Manage user lifecycle, roles, and access policies." eyebrow="Operations"></app-page-header>
+  <app-user-filters (filtersChanged)="applyFilters($event)"></app-user-filters>
+  <app-data-table
+    title="Users"
+    [columns]="columns"
+    [rows]="rows()"
+    [loading]="loading()"
+    [totalCount]="rows().length"
+    [rowActions]="actions"
+    (actionTriggered)="handleAction($event)"
+  ></app-data-table>
+</section>

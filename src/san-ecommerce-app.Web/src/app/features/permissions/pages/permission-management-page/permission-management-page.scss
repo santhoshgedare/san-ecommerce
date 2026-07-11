@@ -1,0 +1,27 @@
+.permission-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.tree-node {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tree-hidden {
+  display: none;
+}
+
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.matrix-table th,
+.matrix-table td {
+  border-bottom: 1px solid var(--app-border);
+  padding: 0.75rem;
+  text-align: left;
+}

@@ -1,0 +1,8 @@
+<section class="app-page">
+  <app-page-header title="Role management" subtitle="Design reusable access profiles for enterprise operations." eyebrow="RBAC">
+    <div actions>
+      <a mat-flat-button color="primary" routerLink="/roles/new">Create role</a>
+    </div>
+  </app-page-header>
+  <app-data-table title="Roles" [columns]="columns" [rows]="rows" [totalCount]="rows.length" [rowActions]="actions" (actionTriggered)="handleAction($event)"></app-data-table>
+</section>

@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Assign roles</h2>
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field appearance="outline">
+    <mat-label>Roles</mat-label>
+    <mat-select formControlName="roles" multiple>
+      @for (role of data.availableRoles; track role) {
+        <mat-option [value]="role">{{ role }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close type="button">Cancel</button>
+  <button mat-flat-button color="primary" type="button" (click)="save()">Save</button>
+</mat-dialog-actions>

@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>{{ 'common.delete' | translate }} {{ data.itemType ?? 'item' }}</h2>
+<mat-dialog-content>
+  {{ 'common.deleteConfirmation' | translate: { item: data.itemName } }}
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close(false)">{{ 'common.cancel' | translate }}</button>
+  <button mat-flat-button color="warn" type="button" (click)="close(true)">
+    {{ 'common.delete' | translate }}
+  </button>
+</mat-dialog-actions>

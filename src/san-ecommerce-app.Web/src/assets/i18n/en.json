@@ -1,0 +1,124 @@
+{
+  "app": {
+    "tagline": "Modern enterprise administration for San Commerce.",
+    "subtitle": "Production-ready Angular foundation with secure authentication, responsive layouts, and scalable feature organization.",
+    "adminPortal": "Admin portal"
+  },
+  "auth": {
+    "login": "Sign in",
+    "logout": "Sign out",
+    "loginSubtitle": "Use your ASP.NET Core Identity account to access the admin workspace.",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordSubtitle": "Enter your email to generate a password reset workflow.",
+    "sendResetLink": "Send reset link",
+    "backToLogin": "Back to sign in",
+    "resetPassword": "Reset password",
+    "resetPasswordSubtitle": "Submit the reset token and choose a strong new password.",
+    "resetToken": "Reset token",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "features": {
+      "security": "JWT access and refresh token flow",
+      "authorization": "Role and permission-aware navigation",
+      "localization": "ngx-translate ready language switching"
+    }
+  },
+  "common": {
+    "search": "Search",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "deleteConfirmation": "Are you sure you want to remove {{ item }}?",
+    "backHome": "Back to dashboard",
+    "actions": "Actions",
+    "records": "records"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "userList": "User list",
+    "addUser": "Add user",
+    "deletedUsers": "Deleted users",
+    "roles": "Roles",
+    "permissions": "Permissions",
+    "profile": "Profile",
+    "settings": "Settings",
+    "changePassword": "Change password"
+  },
+  "users": {
+    "editTitle": "Edit user",
+    "detailTitle": "User details"
+  },
+  "roles": {
+    "createTitle": "Create role",
+    "editTitle": "Edit role"
+  },
+  "permissions": {
+    "groups": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "roles": "Roles",
+      "permissions": "Permissions",
+      "settings": "Profile and settings"
+    },
+    "dashboard": {
+      "view": "View dashboard",
+      "viewDescription": "Access KPI summaries and activity widgets."
+    },
+    "users": {
+      "view": "View users",
+      "viewDescription": "Browse user records and profiles.",
+      "create": "Create users",
+      "createDescription": "Register new platform users.",
+      "edit": "Edit users",
+      "editDescription": "Update user identity and profile data.",
+      "delete": "Delete users",
+      "deleteDescription": "Archive users from the active roster.",
+      "restore": "Restore users",
+      "restoreDescription": "Reactivate inactive users.",
+      "assignRoles": "Assign roles",
+      "assignRolesDescription": "Grant and revoke role memberships.",
+      "resetPassword": "Reset password",
+      "resetPasswordDescription": "Initiate password recovery for a user."
+    },
+    "roles": {
+      "view": "View roles",
+      "viewDescription": "Inspect configured access profiles.",
+      "manage": "Manage roles",
+      "manageDescription": "Create and evolve role definitions."
+    },
+    "permissions": {
+      "view": "View permissions",
+      "viewDescription": "Inspect role permission mappings.",
+      "manage": "Manage permissions",
+      "manageDescription": "Maintain permission matrix configuration."
+    },
+    "profile": {
+      "view": "View profile",
+      "viewDescription": "Access personal identity data."
+    },
+    "settings": {
+      "manage": "Manage settings",
+      "manageDescription": "Update application and account preferences."
+    }
+  },
+  "validation": {
+    "required": "This field is required.",
+    "email": "Enter a valid email address.",
+    "minlength": "The value is too short.",
+    "fieldMismatch": "The values do not match.",
+    "weakPassword": "Use at least 8 characters with upper, lower, number, and symbol.",
+    "invalid": "Enter a valid value."
+  },
+  "errors": {
+    "unauthorizedTitle": "Authentication required",
+    "unauthorizedMessage": "Sign in to continue to the protected workspace.",
+    "accessDeniedTitle": "Access denied",
+    "accessDeniedMessage": "Your current role does not allow access to this page.",
+    "notFoundTitle": "Page not found",
+    "notFoundMessage": "The page you requested is not available."
+  }
+}

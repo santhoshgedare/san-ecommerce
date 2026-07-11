@@ -1,0 +1,54 @@
+<section class="app-page">
+  <app-page-header title="Permission management" subtitle="Balance role defaults with permission visibility in a single matrix." eyebrow="Authorization"></app-page-header>
+  <div class="permission-layout">
+    <mat-card class="app-card page-section">
+      <h3>Permission catalog</h3>
+      <mat-tree #tree [dataSource]="treeData" [childrenAccessor]="childrenAccessor">
+        <mat-tree-node *matTreeNodeDef="let node">
+          <div class="tree-node">{{ node.label | translate }}</div>
+        </mat-tree-node>
+        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+          <div class="tree-node">
+            <button mat-icon-button matTreeNodeToggle type="button">
+              <mat-icon>{{ tree.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+            </button>
+            {{ node.label | translate }}
+          </div>
+          <div [class.tree-hidden]="!tree.isExpanded(node)">
+            <ng-container matTreeNodeOutlet></ng-container>
+          </div>
+        </mat-nested-tree-node>
+      </mat-tree>
+    </mat-card>
+
+    <mat-card class="app-card page-section">
+      <h3>Permission matrix</h3>
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Permission</th>
+            @for (role of roles; track role) {
+              <th>{{ role }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (group of catalog.groups; track group.key) {
+            @for (permission of group.permissions; track permission.key) {
+              <tr>
+                <td>{{ permission.labelKey | translate }}</td>
+                @for (role of roles; track role) {
+                  <td>
+                    <mat-icon color="primary">
+                      {{ hasPermission(role, permission.key) ? 'check_circle' : 'remove_circle_outline' }}
+                    </mat-icon>
+                  </td>
+                }
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </mat-card>
+  </div>
+</section>

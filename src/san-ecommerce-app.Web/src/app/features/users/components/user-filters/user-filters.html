@@ -1,0 +1,22 @@
+<form class="filters app-card page-section" [formGroup]="form">
+  <mat-form-field appearance="outline">
+    <mat-label>Search</mat-label>
+    <input matInput formControlName="search" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Status</mat-label>
+    <mat-select formControlName="status">
+      <mat-option value="all">All</mat-option>
+      <mat-option value="active">Active</mat-option>
+      <mat-option value="inactive">Inactive</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Department</mat-label>
+    <mat-select formControlName="department">
+      @for (department of departments; track department) {
+        <mat-option [value]="department">{{ department }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</form>

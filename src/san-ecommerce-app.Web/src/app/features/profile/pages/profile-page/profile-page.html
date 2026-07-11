@@ -1,0 +1,25 @@
+@if (authService.session(); as session) {
+  <section class="app-page">
+    <app-page-header title="Profile" subtitle="Review identity details, roles, and security posture." eyebrow="Identity"></app-page-header>
+    <app-profile-card [profile]="session"></app-profile-card>
+    <div class="profile-grid">
+      <mat-card class="app-card page-section">
+        <h3>Identity</h3>
+        <p><strong>Email:</strong> {{ session.email }}</p>
+        <p><strong>User ID:</strong> {{ session.userId }}</p>
+        <p><strong>Roles:</strong> {{ session.roles.join(', ') }}</p>
+        <a mat-stroked-button routerLink="/change-password">Change password</a>
+      </mat-card>
+      <mat-card class="app-card page-section">
+        <h3>Security insights</h3>
+        <mat-list>
+          <mat-list-item>Refresh token rotation is enabled.</mat-list-item>
+          <mat-list-item>Idle timeout is enforced after inactivity.</mat-list-item>
+          <mat-list-item>Permission-aware navigation is active.</mat-list-item>
+        </mat-list>
+      </mat-card>
+    </div>
+  </section>
+} @else {
+  <app-empty-state title="Profile unavailable" description="Sign in to review account information."></app-empty-state>
+}
